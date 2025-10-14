@@ -2,12 +2,8 @@ package com.conexia.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -54,26 +50,5 @@ public class UserEntity {
   @PreUpdate
   public void preUpdate() {
     this.updatedAt = LocalDateTime.now();
-  }
-
-  // Implementación de UserDetails
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return Collections.singletonList(new SimpleGrantedAuthority(rol.getName()));
-  }
-
-  public boolean isAccountNonExpired() {
-    return true;
-  }
-
-  public boolean isAccountNonLocked() {
-    return true;
-  }
-
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
-
-  public boolean isEnabled() {
-    return isActive;
   }
 }
