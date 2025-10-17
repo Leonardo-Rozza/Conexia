@@ -41,6 +41,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(http -> {
               //Configurar endpoints públicos
               http.requestMatchers("/auth/**", "/error").permitAll();
+              http.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
               //Configurar endpoints privados
               // http.requestMatchers();
               //Configurar endpoints por defecto.
