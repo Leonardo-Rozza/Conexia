@@ -5,10 +5,12 @@ import com.conexia.persistence.entity.UserEntity;
 import com.conexia.persistence.entity.enums.RoleName;
 import com.conexia.persistence.repository.RolRepository;
 import com.conexia.persistence.repository.UserRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
@@ -19,6 +21,7 @@ public class ConexiaBackendApplication {
 	}
 
   @Bean
+  @Profile("!test")
   CommandLineRunner init(UserRepository userRepository,
                          RolRepository rolRepository,
                          PasswordEncoder passwordEncoder) {
