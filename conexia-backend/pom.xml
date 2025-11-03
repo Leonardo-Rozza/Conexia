@@ -226,16 +226,15 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version> <!-- última versión estable -->
+                <version>0.8.12</version>
                 <executions>
-                    <!-- Se ejecuta automáticamente cuando hacés "mvn test" -->
+
                     <execution>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
 
-                    <!-- Genera el reporte al finalizar los tests -->
                     <execution>
                         <id>report</id>
                         <phase>test</phase>

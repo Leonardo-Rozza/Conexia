@@ -1,6 +1,6 @@
 package com.conexia.persistence.entity;
 
-import com.conexia.persistence.entity.enums.EstadoLaboral;
+import com.conexia.persistence.entity.enums.EmploymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EgresadoEntity {
+public class GraduateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +48,7 @@ public class EgresadoEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "employment_status")
-    private EstadoLaboral employmentStatus;
+    private EmploymentStatus employmentStatus;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

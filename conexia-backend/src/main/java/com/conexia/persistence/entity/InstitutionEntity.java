@@ -1,7 +1,7 @@
 package com.conexia.persistence.entity;
 
 
-import com.conexia.persistence.entity.enums.TipoInstitucion;
+import com.conexia.persistence.entity.enums.InstitutionType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,7 +30,7 @@ public class InstitutionEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "type_institution")
-  private TipoInstitucion typeInstitution;
+  private InstitutionType typeInstitution;
 
   @Column(name = "email", unique = true, length = 150)
   private String email;
