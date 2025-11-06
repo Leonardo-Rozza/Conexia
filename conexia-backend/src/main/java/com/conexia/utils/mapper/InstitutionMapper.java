@@ -24,7 +24,7 @@ public interface InstitutionMapper {
     @Mapping(target = "updatedAt", ignore = true)
     InstitutionEntity toEntity(InstitutionDTO dto);
 
-    List<InstitutionEntity> toEntityList(List<InstitutionDTO> dtos);
+    // List<InstitutionEntity> toEntityList(List<InstitutionDTO> dtos);
 
     // ===== Update parcial (patch) =====
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
