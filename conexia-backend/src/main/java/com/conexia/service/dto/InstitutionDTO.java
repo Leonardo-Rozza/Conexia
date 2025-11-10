@@ -47,7 +47,6 @@ public record InstitutionDTO(
                                           String address,
                                           Long userId) {
         return new InstitutionDTO(null, userId, name, typeInstitution, email, phone, address, null, null);
-
     }
 
 
