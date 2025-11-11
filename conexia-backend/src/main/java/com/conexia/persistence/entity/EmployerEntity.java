@@ -14,6 +14,11 @@ import java.time.LocalDateTime;
 @Table(name = "employers")
 public class EmployerEntity {
 
+    public EmployerEntity(UserEntity user) {
+        this.user = user;
+        this.email = user.getEmail(); // opcional
+    }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id_employer")

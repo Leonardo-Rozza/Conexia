@@ -1,9 +1,7 @@
 package com.conexia.service.impl;
 
-import com.conexia.persistence.entity.Rol;
-import com.conexia.persistence.entity.UserEntity;
-import com.conexia.persistence.repository.RolRepository;
-import com.conexia.persistence.repository.UserRepository;
+import com.conexia.persistence.entity.*;
+import com.conexia.persistence.repository.*;
 import com.conexia.service.dto.AuthCreatedUserRequest;
 import com.conexia.service.dto.AuthLoginRequest;
 import com.conexia.service.dto.AuthResponse;
@@ -29,13 +27,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final RolRepository rolRepository;
+  private final InstitutionRepository institutionRepository;
+  private final GraduateRepository graduateRepository;
+  private final EmployerRepository employerRepository;
 
-  public UserDetailsServiceImpl(JwtUtils jwtUtils, UserRepository userRepository, PasswordEncoder passwordEncoder, RolRepository rolRepository) {
+
+    public UserDetailsServiceImpl(JwtUtils jwtUtils, UserRepository userRepository, PasswordEncoder passwordEncoder, RolRepository rolRepository, InstitutionRepository institutionRepository, GraduateRepository graduateRepository, EmployerRepository employerRepository
+    ) {
     this.jwtUtils = jwtUtils;
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.rolRepository = rolRepository;
-  }
+    this.institutionRepository = institutionRepository;
+    this.graduateRepository = graduateRepository;
+    this.employerRepository = employerRepository;
+    }
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -105,8 +111,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     userRepository.save(user);
 
-    var authority = Collections.singletonList(new SimpleGrantedAuthority(rol.getName()));
+    switch (rol.getName()) {
+        case "ROLE_INSTITUCION" -> institutionRepository.save(new InstitutionEntity(user));
+        case "ROLE_EGRESADO" -> graduateRepository.save(new GraduateEntity(user));
+        case "ROLE_EMPLEADOR" -> employerRepository.save(new EmployerEntity(user));
+    }
 
+    var authority = Collections.singletonList(new SimpleGrantedAuthority(rol.getName()));
     UserDetails userDetails = new User(
             user.getUsername(),
             user.getPassword(),

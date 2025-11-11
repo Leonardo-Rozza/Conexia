@@ -46,7 +46,7 @@ public class SecurityConfig {
               http.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
               http.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
               //Configurar endpoints privados
-              // http.requestMatchers();
+                http.requestMatchers("/api/institutions", "/api/institutions/**").hasAnyRole("INSTITUCION", "ADMIN");
               //Configurar endpoints por defecto.
                 http.anyRequest().authenticated();
             })

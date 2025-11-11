@@ -16,6 +16,12 @@ import java.time.LocalDateTime;
 @Table(name = "institutions")
 public class InstitutionEntity {
 
+ public InstitutionEntity(UserEntity user) {
+     this.user = user;
+     this.email = user.getEmail();
+ }
+
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id_institucion")

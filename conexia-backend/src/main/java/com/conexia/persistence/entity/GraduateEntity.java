@@ -16,6 +16,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class GraduateEntity {
 
+    public GraduateEntity(UserEntity user) {
+        this.user = user;
+        this.email = user.getEmail(); // opcional
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_graduate")
