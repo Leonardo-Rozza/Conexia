@@ -1,6 +1,7 @@
 package com.conexia.service;
 
 import com.conexia.service.dto.EmployerDTO;
+import com.conexia.service.dto.EmployerUpdateDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,8 +13,7 @@ public interface EmployerService {
     Page<EmployerDTO> findAll(Pageable pageable);
     EmployerDTO findById(Long id);
     EmployerDTO save(EmployerDTO employerDTO);
-    EmployerDTO update(Long id, EmployerDTO employerDTO);
+    EmployerDTO update(Long id, EmployerUpdateDTO employerUpdateDTO);
     void deleteById(Long id);
-
 
 }

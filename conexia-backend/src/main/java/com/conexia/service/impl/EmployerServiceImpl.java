@@ -6,12 +6,14 @@ import com.conexia.persistence.entity.EmployerEntity;
 import com.conexia.persistence.repository.EmployerRepository;
 import com.conexia.service.EmployerService;
 import com.conexia.service.dto.EmployerDTO;
+import com.conexia.service.dto.EmployerUpdateDTO;
 import com.conexia.utils.mapper.EmployerMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EmployerServiceImpl implements EmployerService {
@@ -57,22 +59,21 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
-    public EmployerDTO update(Long id, EmployerDTO employerDTO) {
+    public EmployerDTO update(Long id, EmployerUpdateDTO employerUpdateDTO) {
         EmployerEntity employerEntity = this.employerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Empleador", id));
 
-        // Validar que no intenten cambiar el userId
-        if (!employerEntity.getUser().getId().equals(employerDTO.userId())) {
-            throw new BusinessException("No se puede cambiar el usuario asociado al empleador.");
+        // Validar email duplicado solo si se está actualizando
+        if (employerUpdateDTO.email() != null && !employerUpdateDTO.email().trim().isEmpty()) {
+            boolean emailUsado = employerRepository.existsByEmail(employerUpdateDTO.email());
+            boolean emailCambiado = !Objects.equals(employerEntity.getEmail(), employerUpdateDTO.email());
+
+            if (emailUsado && emailCambiado) {
+                throw new BusinessException("El nuevo correo electrónico ya está siendo utilizado por otro empleador.");
+            }
         }
 
-        // Verificar email duplicado
-        if (employerRepository.existsByEmail(employerDTO.email()) &&
-                !employerEntity.getEmail().equals(employerDTO.email())) {
-            throw new BusinessException("El nuevo correo electrónico ya está siendo utilizado por otro empleador.");
-        }
-
-        this.employerMapper.updateEntityFromDTO(employerDTO, employerEntity);
+        this.employerMapper.updateEntityFromDTO(employerUpdateDTO, employerEntity);
         EmployerEntity saved = this.employerRepository.save(employerEntity);
 
         return this.employerMapper.toDto(saved);
