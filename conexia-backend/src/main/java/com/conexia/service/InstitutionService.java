@@ -2,6 +2,7 @@ package com.conexia.service;
 
 
 import com.conexia.service.dto.InstitutionDTO;
+import com.conexia.service.dto.InstitutionUpdateDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,7 +14,7 @@ public interface InstitutionService {
     List<InstitutionDTO> findAll();
     Page<InstitutionDTO> findAll(Pageable pageable);
     InstitutionDTO findById(Long id);
-    InstitutionDTO create(InstitutionDTO institution);
-    InstitutionDTO update(InstitutionDTO institution, Long id);
+    InstitutionDTO save(InstitutionDTO institutionDTO);
+    InstitutionDTO update(Long id, InstitutionUpdateDTO institutionUpdateDTO);
     void deleteById(Long id);
 }

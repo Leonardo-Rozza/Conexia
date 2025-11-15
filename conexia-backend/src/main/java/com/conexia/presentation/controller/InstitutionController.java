@@ -2,6 +2,7 @@ package com.conexia.presentation.controller;
 
 import com.conexia.service.InstitutionService;
 import com.conexia.service.dto.InstitutionDTO;
+import com.conexia.service.dto.InstitutionUpdateDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -38,6 +39,7 @@ public class InstitutionController {
     }
 
     @Operation(summary = "Obtener instituciones con paginación")
+    @ApiResponse(responseCode = "200", description = "Página obtenida correctamente.")
     @GetMapping("/paginated")
     public ResponseEntity<Page<InstitutionDTO>> getAllPaginated(Pageable pageable){
         Page<InstitutionDTO> institutions = institutionService.findAll(pageable);
@@ -61,7 +63,7 @@ public class InstitutionController {
     })
     @PostMapping
     public ResponseEntity<InstitutionDTO> save(@Valid @RequestBody InstitutionDTO institutionDTO){
-        InstitutionDTO institution = institutionService.create(institutionDTO);
+        InstitutionDTO institution = institutionService.save(institutionDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(institution);
     }
 
@@ -72,9 +74,10 @@ public class InstitutionController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos o email duplicado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<InstitutionDTO> update(@PathVariable Long id, @Valid @RequestBody InstitutionDTO institutionDTO){
-        InstitutionDTO institution = institutionService.update(institutionDTO, id);
+    public ResponseEntity<InstitutionDTO> update(@PathVariable Long id,
+                                                 @Valid @RequestBody InstitutionUpdateDTO institutionUpdateDTO){
 
+        InstitutionDTO institution = institutionService.update(id, institutionUpdateDTO);
         return ResponseEntity.ok(institution);
     }
 

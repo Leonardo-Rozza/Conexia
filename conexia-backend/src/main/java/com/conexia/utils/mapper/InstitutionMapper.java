@@ -3,6 +3,7 @@ package com.conexia.utils.mapper;
 import com.conexia.persistence.entity.InstitutionEntity;
 import com.conexia.persistence.entity.UserEntity;
 import com.conexia.service.dto.InstitutionDTO;
+import com.conexia.service.dto.InstitutionUpdateDTO;
 import org.mapstruct.*;
 import java.util.List;
 
@@ -24,10 +25,11 @@ public interface InstitutionMapper {
 
     // ===== Update parcial (patch) =====
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(source = "userId", target = "user.id")
+    @Mapping(target = "idInstitucion", ignore = true)
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    void updateEntityFromDTO(InstitutionDTO dto, @MappingTarget InstitutionEntity entity);
+    void updateEntityFromDTO(InstitutionUpdateDTO dto, @MappingTarget InstitutionEntity entity);
 
     // ===== Creación (forzada sin Id/fechas) =====
     @Mapping(target = "idInstitucion", ignore = true)

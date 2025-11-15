@@ -6,6 +6,7 @@ import com.conexia.persistence.entity.InstitutionEntity;
 import com.conexia.persistence.repository.InstitutionRepository;
 import com.conexia.service.InstitutionService;
 import com.conexia.service.dto.InstitutionDTO;
+import com.conexia.service.dto.InstitutionUpdateDTO;
 import com.conexia.utils.mapper.InstitutionMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class InstitutionServiceImpl implements InstitutionService {
@@ -47,7 +49,7 @@ public class InstitutionServiceImpl implements InstitutionService {
 
     @Override
     @Transactional
-    public InstitutionDTO create(InstitutionDTO institution) {
+    public InstitutionDTO save(InstitutionDTO institution) {
         if (institutionRepository.existsByEmail(institution.email())) {
             throw new BusinessException("Email existente, ya fue creado por otra institución.");
         }
@@ -60,15 +62,19 @@ public class InstitutionServiceImpl implements InstitutionService {
 
     @Override
     @Transactional
-    public InstitutionDTO update(InstitutionDTO institution, Long id) {
+    public InstitutionDTO update(Long id, InstitutionUpdateDTO institution) {
 
         InstitutionEntity existingInstitution = institutionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Institución", id));
 
-        // Verificar email duplicado
-        if (institutionRepository.existsByEmail(institution.email()) &&
-                !existingInstitution.getEmail().equals(institution.email())) {
-            throw new BusinessException("El nuevo correo electrónico ya está siendo utilizado por otra institución.");
+        // Validar email duplicado solo si se está actualizando
+        if (institution.email() != null && !institution.email().trim().isEmpty()) {
+            boolean emailUsado = institutionRepository.existsByEmail(institution.email());
+            boolean emailCambiado = !Objects.equals(existingInstitution.getEmail(), institution.email());
+
+            if (emailUsado && emailCambiado) {
+                throw new BusinessException("El nuevo correo electrónico ya está siendo utilizado por otra Institución.");
+            }
         }
 
         this.institutionMapper.updateEntityFromDTO(institution, existingInstitution);
@@ -82,7 +88,6 @@ public class InstitutionServiceImpl implements InstitutionService {
         if (!this.institutionRepository.existsById(id)){
             throw new ResourceNotFoundException("Institución", id);
         }
-
         this.institutionRepository.deleteById(id);
     }
 }
