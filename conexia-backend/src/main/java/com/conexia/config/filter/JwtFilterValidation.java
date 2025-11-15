@@ -1,6 +1,7 @@
 package com.conexia.config.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.conexia.service.dto.LoggedUser;
 import com.conexia.utils.jwt.JwtUtils;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -44,12 +45,14 @@ public class JwtFilterValidation extends OncePerRequestFilter {
         DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
         String username = jwtUtils.extractUsername(decodedJWT);
         String role = jwtUtils.getSpecifictClaim(decodedJWT, "role").asString();
+        Long userId = jwtUtils.getSpecifictClaim(decodedJWT, "userId").asLong();
 
+        LoggedUser loggedUser = new LoggedUser(username, userId);
 
         GrantedAuthority authority = new SimpleGrantedAuthority(role);
 
         UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(username, null, Collections.singletonList(authority));
+                new UsernamePasswordAuthenticationToken(loggedUser, null, Collections.singletonList(authority));
 
         SecurityContextHolder.getContext().setAuthentication(authToken);
 

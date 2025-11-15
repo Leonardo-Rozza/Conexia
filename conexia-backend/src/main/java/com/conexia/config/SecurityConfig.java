@@ -41,13 +41,47 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(http -> {
-              //Configurar endpoints públicos
-              http.requestMatchers("/auth/**", "/error").permitAll();
-              http.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
-              http.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
-              //Configurar endpoints privados
-                http.requestMatchers("/api/institutions", "/api/institutions/**").hasAnyRole("INSTITUCION", "ADMIN");
-              //Configurar endpoints por defecto.
+                // ===== Endpoints públicos =====
+                http.requestMatchers("/auth/**", "/error").permitAll();
+                http.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
+                http.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+
+                // ===== INSTITUCIONES =====
+                // Listados solo ADMIN
+                http.requestMatchers(HttpMethod.GET, "/api/institutions", "/api/institutions/paginated")
+                        .hasRole("ADMIN");
+                // Creación manual solo ADMIN
+                http.requestMatchers(HttpMethod.POST, "/api/institutions/**")
+                        .hasRole("ADMIN");
+                // Acceso a recursos específicos (GET/PUT/DELETE /{id}) -> rol INSTITUCION o ADMIN
+                http.requestMatchers("/api/institutions/**")
+                        .hasAnyRole("INSTITUCION", "ADMIN");
+
+                // ===== EMPLEADORES =====
+                // OJO: tu base path era /api/employer en el código anterior.
+                // Listados solo ADMIN
+                http.requestMatchers(HttpMethod.GET, "/api/employers", "/api/employers/paginated")
+                        .hasRole("ADMIN");
+                // Creación manual solo ADMIN (si la tenés)
+                http.requestMatchers(HttpMethod.POST, "/api/employers/**")
+                        .hasRole("ADMIN");
+                // Acceso a recursos específicos -> EMPLEADOR o ADMIN
+                http.requestMatchers("/api/employers/**")
+                        .hasAnyRole("EMPLEADOR", "ADMIN");
+
+                // ===== EGRESADOS =====
+                // Asumo que tu base path será /api/graduates
+                // Listados solo ADMIN
+                http.requestMatchers(HttpMethod.GET, "/api/graduates", "/api/graduates/paginated")
+                        .hasRole("ADMIN");
+                // Creación manual solo ADMIN (si la tuvieras)
+                http.requestMatchers(HttpMethod.POST, "/api/graduates/**")
+                        .hasRole("ADMIN");
+                // Acceso a recursos específicos -> EGRESADO o ADMIN
+                http.requestMatchers("/api/graduates/**")
+                        .hasAnyRole("EGRESADO", "ADMIN");
+
+                // ===== Por defecto: cualquier otra cosa autenticada =====
                 http.anyRequest().authenticated();
             })
             .addFilterBefore(new JwtFilterValidation(jwtUtils), UsernamePasswordAuthenticationFilter.class)

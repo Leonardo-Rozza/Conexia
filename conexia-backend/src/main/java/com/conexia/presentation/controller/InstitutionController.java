@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,6 +52,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "200", description = "Institución encontrada"),
             @ApiResponse(responseCode = "404", description = "Institución no encontrada")
     })
+    @PreAuthorize("hasRole('ADMIN') or @securityService.isInstitutionOwner(#id)")
     @GetMapping("/{id}")
     public ResponseEntity<InstitutionDTO> getById(@PathVariable Long id){
         return ResponseEntity.ok(institutionService.findById(id));
@@ -73,6 +75,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Institución no encontrada"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos o email duplicado")
     })
+    @PreAuthorize("hasRole('ADMIN') or @securityService.isInstitutionOwner(#id)")
     @PutMapping("/{id}")
     public ResponseEntity<InstitutionDTO> update(@PathVariable Long id,
                                                  @Valid @RequestBody InstitutionUpdateDTO institutionUpdateDTO){
@@ -86,8 +89,9 @@ public class InstitutionController {
             @ApiResponse(responseCode = "204", description = "Institución eliminada correctamente"),
             @ApiResponse(responseCode = "404", description = "Institución no encontrada")
     })
+    @PreAuthorize("hasRole('ADMIN') or @securityService.isInstitutionOwner(#id)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){ // Void en lugar de Boolean
+    public ResponseEntity<Void> deleteById(@PathVariable Long id){
         institutionService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

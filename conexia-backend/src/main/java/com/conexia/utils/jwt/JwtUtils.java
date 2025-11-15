@@ -7,6 +7,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.conexia.persistence.entity.UserEntity;
+import com.conexia.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,14 +30,26 @@ public class JwtUtils {
     @Value("${security.jwt.expiration}")
     private long expiredToken;
 
+    private final UserRepository userRepository;
+
+    // Injectamos UserRepository para poder extraer userId
+    public JwtUtils(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public String createdToken(Authentication authentication){
       Algorithm algorithm = Algorithm.HMAC256(this.key);
       UserDetails userDetails = (UserDetails) authentication.getPrincipal();
       String username = userDetails.getUsername();
 
+        // Obtener userId desde la base
+        UserEntity userEntity =  userRepository.findUserEntityByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado al generar token"));
+
       return JWT.create()
               .withIssuer(this.user)
               .withSubject(username)
+              .withClaim("userId", userEntity.getId())
               .withIssuedAt(new Date())
               .withClaim("role", userDetails.getAuthorities().iterator().next().getAuthority())
               .withExpiresAt(new Date(System.currentTimeMillis() + this.expiredToken))
