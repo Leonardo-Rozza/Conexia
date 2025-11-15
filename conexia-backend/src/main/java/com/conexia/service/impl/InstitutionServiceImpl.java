@@ -78,11 +78,11 @@ public class InstitutionServiceImpl implements InstitutionService {
 
     @Override
     @Transactional
-    public Boolean deleteById(Long id) {
+    public void deleteById(Long id) {
         if (!this.institutionRepository.existsById(id)){
             throw new ResourceNotFoundException("Institución", id);
         }
-            this.institutionRepository.deleteById(id);
-            return true;
+
+        this.institutionRepository.deleteById(id);
     }
 }

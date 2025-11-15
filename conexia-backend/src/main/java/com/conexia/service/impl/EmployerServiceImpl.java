@@ -84,7 +84,6 @@ public class EmployerServiceImpl implements EmployerService {
         if (!this.employerRepository.existsById(id)){
             throw new ResourceNotFoundException("No se encontró el empleador a eliminar.");
         }
-
         this.employerRepository.deleteById(id);
     }
 }

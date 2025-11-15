@@ -40,24 +40,4 @@ public record InstitutionDTO(
         LocalDateTime updatedAt
 ) {
 
-    public static InstitutionDTO ofCreate(String name,
-                                          InstitutionType typeInstitution,
-                                          String email,
-                                          String phone,
-                                          String address,
-                                          Long userId) {
-        return new InstitutionDTO(null, userId, name, typeInstitution, email, phone, address, null, null);
-    }
-
-
-    public static InstitutionDTO ofUpdate(Long idInstitucion,
-                                          String name,
-                                          InstitutionType typeInstitution,
-                                          String email,
-                                          String phone,
-                                          String address,
-                                          Long userId,
-                                          LocalDateTime createdAt) {
-        return new InstitutionDTO(idInstitucion, userId, name, typeInstitution, email, phone, address, createdAt, null);
-    }
 }

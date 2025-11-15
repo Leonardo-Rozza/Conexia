@@ -15,5 +15,5 @@ public interface InstitutionService {
     InstitutionDTO findById(Long id);
     InstitutionDTO create(InstitutionDTO institution);
     InstitutionDTO update(InstitutionDTO institution, Long id);
-    Boolean deleteById(Long id);
+    void deleteById(Long id);
 }
