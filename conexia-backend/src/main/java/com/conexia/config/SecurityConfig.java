@@ -58,7 +58,6 @@ public class SecurityConfig {
                         .hasAnyRole("INSTITUCION", "ADMIN");
 
                 // ===== EMPLEADORES =====
-                // OJO: tu base path era /api/employer en el código anterior.
                 // Listados solo ADMIN
                 http.requestMatchers(HttpMethod.GET, "/api/employers", "/api/employers/paginated")
                         .hasRole("ADMIN");
@@ -70,7 +69,6 @@ public class SecurityConfig {
                         .hasAnyRole("EMPLEADOR", "ADMIN");
 
                 // ===== EGRESADOS =====
-                // Asumo que tu base path será /api/graduates
                 // Listados solo ADMIN
                 http.requestMatchers(HttpMethod.GET, "/api/graduates", "/api/graduates/paginated")
                         .hasRole("ADMIN");
@@ -80,6 +78,25 @@ public class SecurityConfig {
                 // Acceso a recursos específicos -> EGRESADO o ADMIN
                 http.requestMatchers("/api/graduates/**")
                         .hasAnyRole("EGRESADO", "ADMIN");
+
+                // ===== OFERTAS LABORALES =====
+                // ver ofertas activas (público / egresados)
+                http.requestMatchers("/api/offers/active", "/api/offers/active/**")
+                        .permitAll();
+
+                // ver ofertas de un empleador, crear, actualizar, eliminar (EMPLEADOR o ADMIN)
+                http.requestMatchers(HttpMethod.GET, "/api/offers/employer/**")
+                        .hasAnyRole("EMPLEADOR", "ADMIN");
+                http.requestMatchers(HttpMethod.POST, "/api/offers")
+                        .hasAnyRole("EMPLEADOR", "ADMIN");
+                http.requestMatchers(HttpMethod.PUT, "/api/offers/**")
+                        .hasAnyRole("EMPLEADOR", "ADMIN");
+                http.requestMatchers(HttpMethod.DELETE, "/api/offers/**")
+                        .hasAnyRole("EMPLEADOR", "ADMIN");
+
+                // ver todas las ofertas / paginadas (solo ADMIN)
+                http.requestMatchers(HttpMethod.GET, "/api/offers", "/api/offers/paginated")
+                        .hasRole("ADMIN");
 
                 // ===== Por defecto: cualquier otra cosa autenticada =====
                 http.anyRequest().authenticated();
