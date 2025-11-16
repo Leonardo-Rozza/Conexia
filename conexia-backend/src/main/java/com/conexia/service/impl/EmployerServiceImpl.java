@@ -8,6 +8,7 @@ import com.conexia.service.EmployerService;
 import com.conexia.service.dto.EmployerDTO;
 import com.conexia.service.dto.EmployerUpdateDTO;
 import com.conexia.utils.mapper.EmployerMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,7 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
+    @Transactional
     public EmployerDTO save(EmployerDTO employerDTO) {
         if (this.employerRepository.existsByEmail(employerDTO.email())) {
             throw new BusinessException("Email existente, ya fue creado por otro empleador.");
@@ -59,6 +61,7 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
+    @Transactional
     public EmployerDTO update(Long id, EmployerUpdateDTO employerUpdateDTO) {
         EmployerEntity employerEntity = this.employerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Empleador", id));
@@ -80,6 +83,7 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         if (!this.employerRepository.existsById(id)){
             throw new ResourceNotFoundException("No se encontró el empleador a eliminar.");
