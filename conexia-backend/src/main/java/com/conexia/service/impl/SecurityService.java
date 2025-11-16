@@ -1,14 +1,8 @@
 package com.conexia.service.impl;
 
 import com.conexia.exceptions.ResourceNotFoundException;
-import com.conexia.persistence.entity.EmployerEntity;
-import com.conexia.persistence.entity.GraduateEntity;
-import com.conexia.persistence.entity.InstitutionEntity;
-import com.conexia.persistence.entity.JobOfferEntity;
-import com.conexia.persistence.repository.EmployerRepository;
-import com.conexia.persistence.repository.GraduateRepository;
-import com.conexia.persistence.repository.InstitutionRepository;
-import com.conexia.persistence.repository.JobOfferRepository;
+import com.conexia.persistence.entity.*;
+import com.conexia.persistence.repository.*;
 import com.conexia.service.dto.LoggedUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,17 +14,19 @@ public class SecurityService {
     private final EmployerRepository employerRepository;
     private final GraduateRepository graduateRepository;
     private final JobOfferRepository jobOfferRepository;
+    private final ApplicationRepository applicationRepository;
 
     public SecurityService(
             InstitutionRepository institutionRepository,
             EmployerRepository employerRepository,
             GraduateRepository graduateRepository,
-            JobOfferRepository jobOfferRepository
+            JobOfferRepository jobOfferRepository, ApplicationRepository applicationRepository
     ) {
         this.institutionRepository = institutionRepository;
         this.employerRepository = employerRepository;
         this.graduateRepository = graduateRepository;
         this.jobOfferRepository = jobOfferRepository;
+        this.applicationRepository = applicationRepository;
     }
 
 
@@ -77,5 +73,16 @@ public class SecurityService {
                 .orElseThrow(() -> new ResourceNotFoundException("Oferta Laboral", offerId));
 
         return offer.getEmployer().getUser().getId().equals(logged.userId());
+    }
+
+    // Applications
+
+    public boolean isEmployerOwnerOfApplication(Long applicationId) {
+        LoggedUser logged = getLoggedUser();
+
+        ApplicationEntity app = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Postulación", applicationId));
+
+        return app.getJobOffer().getEmployer().getUser().getId().equals(logged.userId());
     }
 }

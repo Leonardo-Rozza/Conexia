@@ -98,6 +98,24 @@ public class SecurityConfig {
                 http.requestMatchers(HttpMethod.GET, "/api/offers", "/api/offers/paginated")
                         .hasRole("ADMIN");
 
+                // ===== APPLICATIONS =====
+
+                // Graduado se postula
+                http.requestMatchers(HttpMethod.POST, "/api/applications")
+                        .hasAnyRole("EGRESADO", "ADMIN");
+
+                // Graduado ve sus postulaciones
+                http.requestMatchers(HttpMethod.GET, "/api/applications/graduate/**")
+                        .hasAnyRole("EGRESADO", "ADMIN");
+
+                // Empleador ve postulaciones a su oferta
+                http.requestMatchers(HttpMethod.GET, "/api/applications/offer/**")
+                        .hasAnyRole("EMPLEADOR", "ADMIN");
+
+                // Empleador/Admin actualizan estado
+                http.requestMatchers(HttpMethod.PUT, "/api/applications/**")
+                        .hasAnyRole("EMPLEADOR", "ADMIN");
+
                 // ===== Por defecto: cualquier otra cosa autenticada =====
                 http.anyRequest().authenticated();
             })
