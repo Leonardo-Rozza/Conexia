@@ -56,7 +56,7 @@ public class JobOfferServiceImpl implements JobOfferService {
 
     @Override
     public JobOfferDTO findActiveById(Long id) {
-        return this.jobOfferRepository.findByIdAndStatus(id, JobOfferStatus.ACTIVA)
+        return this.jobOfferRepository.findByIdOfferAndStatus(id, JobOfferStatus.ACTIVA)
                 .map(this.jobOfferMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Oferta laboral activa", id));
     }

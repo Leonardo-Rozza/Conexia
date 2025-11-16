@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface JobOfferRepository extends JpaRepository<JobOfferEntity, Long> {
 
     // Buscar una oferta específica que esté ACTIVA (para detalle público)
-    Optional<JobOfferEntity> findByIdAndStatus(Long id, JobOfferStatus status);
+    Optional<JobOfferEntity> findByIdOfferAndStatus(Long idOffer, JobOfferStatus status);
 
     // Listar todas las ofertas por estado (por ejemplo, todas las ACTIVAS)
     List<JobOfferEntity> findAllByStatus(JobOfferStatus status);
