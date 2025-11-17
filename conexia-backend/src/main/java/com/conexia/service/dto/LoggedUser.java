@@ -1,7 +1,7 @@
 package com.conexia.service.dto;
 
 public record LoggedUser(
+        Long userId,
         String username,
-        Long userId
-) {
-}
+        String role
+) { }

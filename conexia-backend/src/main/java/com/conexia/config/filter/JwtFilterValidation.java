@@ -47,7 +47,7 @@ public class JwtFilterValidation extends OncePerRequestFilter {
         String role = jwtUtils.getSpecifictClaim(decodedJWT, "role").asString();
         Long userId = jwtUtils.getSpecifictClaim(decodedJWT, "userId").asLong();
 
-        LoggedUser loggedUser = new LoggedUser(username, userId);
+        LoggedUser loggedUser = new LoggedUser(userId, username, role);
 
         GrantedAuthority authority = new SimpleGrantedAuthority(role);
 

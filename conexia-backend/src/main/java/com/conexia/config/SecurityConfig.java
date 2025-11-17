@@ -99,7 +99,6 @@ public class SecurityConfig {
                         .hasRole("ADMIN");
 
                 // ===== APPLICATIONS =====
-
                 // Graduado se postula
                 http.requestMatchers(HttpMethod.POST, "/api/applications")
                         .hasAnyRole("EGRESADO", "ADMIN");
@@ -115,6 +114,23 @@ public class SecurityConfig {
                 // Empleador/Admin actualizan estado
                 http.requestMatchers(HttpMethod.PUT, "/api/applications/**")
                         .hasAnyRole("EMPLEADOR", "ADMIN");
+
+                // ===== COURSES =====
+                // Lectura (cualquier usuario autenticado)
+                http.requestMatchers(HttpMethod.GET, "/api/courses", "/api/courses/**")
+                        .permitAll();
+
+                // Crear cursos: solo institución o admin
+                http.requestMatchers(HttpMethod.POST, "/api/courses")
+                        .hasAnyRole("INSTITUCION", "ADMIN");
+
+                // Actualizar cursos: solo institución dueña o admin
+                http.requestMatchers(HttpMethod.PUT, "/api/courses/**")
+                        .hasAnyRole("INSTITUCION", "ADMIN");
+
+                // Eliminar cursos: solo institución dueña o admin
+                http.requestMatchers(HttpMethod.DELETE, "/api/courses/**")
+                        .hasAnyRole("INSTITUCION", "ADMIN");
 
                 // ===== Por defecto: cualquier otra cosa autenticada =====
                 http.anyRequest().authenticated();
