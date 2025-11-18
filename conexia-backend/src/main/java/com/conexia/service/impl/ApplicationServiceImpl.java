@@ -23,10 +23,12 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final JobOfferRepository jobOfferRepository;
     private final ApplicationMapper mapper;
 
-    public ApplicationServiceImpl(ApplicationRepository applicationRepository,
-                                  GraduateRepository graduateRepository,
-                                  JobOfferRepository jobOfferRepository,
-                                  ApplicationMapper mapper) {
+    public ApplicationServiceImpl(
+            ApplicationRepository applicationRepository,
+            GraduateRepository graduateRepository,
+            JobOfferRepository jobOfferRepository,
+            ApplicationMapper mapper
+    ) {
         this.applicationRepository = applicationRepository;
         this.graduateRepository = graduateRepository;
         this.jobOfferRepository = jobOfferRepository;
@@ -37,7 +39,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ApplicationDTO apply(ApplicationCreateDTO dto) {
 
         if (applicationRepository.existsByGraduate_IdGraduateAndJobOffer_IdOffer(dto.graduateId(), dto.offerId())) {
-            throw new BusinessException("Ya existe una postulación previa para esta oferta.");
+            throw new BusinessException("Ya existe una postulación para esta oferta.");
         }
 
         GraduateEntity grad = graduateRepository.findById(dto.graduateId())
@@ -51,7 +53,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
 
         ApplicationEntity entity = mapper.toEntityForCreation(dto);
-
         entity.setGraduate(grad);
         entity.setJobOffer(offer);
         entity.setStatus(ApplicationStatus.EN_PROCESO);
@@ -77,11 +78,19 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public ApplicationDTO updateStatus(Long id, ApplicationUpdateDTO dto) {
-        ApplicationEntity app = applicationRepository.findById(id)
+
+        ApplicationEntity entity = applicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Postulación", id));
 
-        mapper.updateEntityFromDTO(dto, app);
+        // Validar transición de estados
+        if (dto.status() == ApplicationStatus.ACEPTADO &&
+                entity.getStatus() == ApplicationStatus.RECHAZADO) {
+            throw new BusinessException("No se puede aceptar una postulación rechazada previamente.");
+        }
 
-        return mapper.toDTO(applicationRepository.save(app));
+        mapper.updateEntityFromDTO(dto, entity);
+
+        return mapper.toDTO(applicationRepository.save(entity));
     }
 }
+

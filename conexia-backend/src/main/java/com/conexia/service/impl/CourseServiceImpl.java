@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -24,7 +25,11 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final InstitutionRepository institutionRepository;
 
-    public CourseServiceImpl(CourseMapper courseMapper, CourseRepository courseRepository, InstitutionRepository institutionRepository) {
+    public CourseServiceImpl(
+            CourseMapper courseMapper,
+            CourseRepository courseRepository,
+            InstitutionRepository institutionRepository
+    ) {
         this.courseMapper = courseMapper;
         this.courseRepository = courseRepository;
         this.institutionRepository = institutionRepository;
@@ -32,68 +37,67 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseDTO> findAll() {
-        return this.courseRepository.findAll().stream()
-                .map(this.courseMapper::toDTO)
+        return courseRepository.findAll()
+                .stream()
+                .map(courseMapper::toDTO)
                 .toList();
     }
 
     @Override
     public Page<CourseDTO> findAll(Pageable pageable) {
-        return this.courseRepository.findAll(pageable)
-                .map(this.courseMapper::toDTO);
+        return courseRepository.findAll(pageable)
+                .map(courseMapper::toDTO);
     }
 
     @Override
     public CourseDTO findById(Long id) {
-        return this.courseRepository.findById(id)
-                .map(this.courseMapper::toDTO)
+        return courseRepository.findById(id)
+                .map(courseMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Curso", id));
     }
 
     @Override
-    public CourseDTO save(CourseCreateDTO courseCreateDTO) {
-        // Validar si la institución existe.
-        InstitutionEntity institution = institutionRepository.findById(courseCreateDTO.idInstitution())
-                .orElseThrow(() -> new ResourceNotFoundException("Institución", courseCreateDTO.idInstitution()));
+    public CourseDTO save(CourseCreateDTO dto) {
 
-        // Validar las fechas
-        if (courseCreateDTO.startDate() != null && courseCreateDTO.endDate() != null) {
-            if (courseCreateDTO.endDate().isBefore(courseCreateDTO.startDate())) {
-                throw new BusinessException("La fecha de fin no puede ser anterior a la fecha de inicio.");
-            }
-        }
+        InstitutionEntity institution = institutionRepository.findById(dto.idInstitution())
+                .orElseThrow(() -> new ResourceNotFoundException("Institución", dto.idInstitution()));
 
-        CourseEntity courseEntity = this.courseMapper.toEntityForCreation(courseCreateDTO);
-        courseEntity.setInstitution(institution);
+        validateDates(dto.startDate(), dto.endDate());
 
-        CourseEntity saved = this.courseRepository.save(courseEntity);
+        CourseEntity entity = courseMapper.toEntityForCreation(dto);
+        entity.setInstitution(institution);
 
-        return this.courseMapper.toDTO(saved);
+        return courseMapper.toDTO(courseRepository.save(entity));
     }
 
     @Override
-    public CourseDTO update(Long id, CourseUpdateDTO courseUpdateDTO) {
-        CourseEntity courseEntity = this.courseRepository.findById(id)
+    public CourseDTO update(Long id, CourseUpdateDTO dto) {
+
+        CourseEntity entity = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Curso", id));
 
-        if (courseUpdateDTO.startDate() != null && courseUpdateDTO.endDate() != null) {
-            if (courseUpdateDTO.endDate().isBefore(courseUpdateDTO.startDate())) {
-                throw new BusinessException("La fecha de fin no puede ser anterior a la fecha de inicio.");
-            }
-        }
+        validateDates(dto.startDate(), dto.endDate());
 
-        this.courseMapper.updateEntityFromDTO(courseUpdateDTO, courseEntity);
-        CourseEntity saved = this.courseRepository.save(courseEntity);
+        courseMapper.updateEntityFromDTO(dto, entity);
 
-        return this.courseMapper.toDTO(saved);
+        return courseMapper.toDTO(courseRepository.save(entity));
     }
 
     @Override
     public void deleteById(Long id) {
-        if (!this.courseRepository.existsById(id)){
+        if (!courseRepository.existsById(id)) {
             throw new ResourceNotFoundException("Curso", id);
         }
+        courseRepository.deleteById(id);
+    }
 
-        this.courseRepository.deleteById(id);
+    private void validateDates(LocalDate start, LocalDate end) {
+        if (start != null && end != null && end.isBefore(start)) {
+            throw new BusinessException("La fecha de fin no puede ser anterior a la fecha de inicio.");
+        }
+        if (end != null && end.isBefore(LocalDate.now())) {
+            throw new BusinessException("La fecha de fin debe ser futura.");
+        }
     }
 }
+

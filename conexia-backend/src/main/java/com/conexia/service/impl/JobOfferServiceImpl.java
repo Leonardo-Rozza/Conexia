@@ -27,106 +27,116 @@ public class JobOfferServiceImpl implements JobOfferService {
     private final JobOfferMapper jobOfferMapper;
     private final EmployerRepository employerRepository;
 
-    public JobOfferServiceImpl(JobOfferRepository jobOfferRepository, JobOfferMapper jobOfferMapper, EmployerRepository employerRepository) {
+    public JobOfferServiceImpl(
+            JobOfferRepository jobOfferRepository,
+            JobOfferMapper jobOfferMapper,
+            EmployerRepository employerRepository
+    ) {
         this.jobOfferRepository = jobOfferRepository;
         this.jobOfferMapper = jobOfferMapper;
         this.employerRepository = employerRepository;
     }
 
-
     @Override
     public List<JobOfferDTO> findAll() {
-        return this.jobOfferRepository.findAll().stream()
-                .map(this.jobOfferMapper::toDTO)
+        return jobOfferRepository.findAll()
+                .stream()
+                .map(jobOfferMapper::toDTO)
                 .toList();
     }
 
     @Override
     public Page<JobOfferDTO> findAll(Pageable pageable) {
-        return this.jobOfferRepository.findAll(pageable)
-                .map(this.jobOfferMapper::toDTO);
+        return jobOfferRepository.findAll(pageable)
+                .map(jobOfferMapper::toDTO);
     }
 
     @Override
     public JobOfferDTO findById(Long id) {
-        return this.jobOfferRepository.findById(id)
-                .map(this.jobOfferMapper::toDTO)
+        return jobOfferRepository.findById(id)
+                .map(jobOfferMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Oferta Laboral", id));
     }
 
     @Override
     public JobOfferDTO findActiveById(Long id) {
-        return this.jobOfferRepository.findByIdOfferAndStatus(id, JobOfferStatus.ACTIVA)
-                .map(this.jobOfferMapper::toDTO)
+        return jobOfferRepository.findByIdOfferAndStatus(id, JobOfferStatus.ACTIVA)
+                .map(jobOfferMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Oferta laboral activa", id));
     }
 
     @Override
     public List<JobOfferDTO> findActive() {
-        return this.jobOfferRepository.findAllByStatus(JobOfferStatus.ACTIVA).stream()
-                .map(this.jobOfferMapper::toDTO)
+        return jobOfferRepository.findAllByStatus(JobOfferStatus.ACTIVA)
+                .stream()
+                .map(jobOfferMapper::toDTO)
                 .toList();
     }
 
     @Override
     public List<JobOfferDTO> findByEmployer(Long employerId) {
-        return this.jobOfferRepository.findAllByEmployer_IdEmployer(employerId).stream()
-                .map(this.jobOfferMapper::toDTO)
+        return jobOfferRepository.findAllByEmployer_IdEmployer(employerId)
+                .stream()
+                .map(jobOfferMapper::toDTO)
                 .toList();
     }
 
     @Override
     @Transactional
     public JobOfferDTO create(JobOfferCreateDTO dto) {
-        // 1) Validar que la fecha de cierre sea futura (por si pasa algo al nivel de validación)
+
+        // Validar fechas
         if (dto.closingDate() != null && dto.closingDate().isBefore(LocalDate.now())) {
-            throw new BusinessException("La fecha de cierre debe ser una fecha futura.");
+            throw new BusinessException("La fecha de cierre debe ser futura.");
         }
 
-        // 2) Mapear DTO → Entity (sin fecha de publicación ni estado)
-        JobOfferEntity jobOfferEntity = this.jobOfferMapper.toEntityForCreation(dto);
-
-        // Verificamos si existe el empleador.
         EmployerEntity employer = employerRepository.findById(dto.employerId())
-                .orElseThrow(() -> new BusinessException("El empleador no existe"));
-        jobOfferEntity.setEmployer(employer);
+                .orElseThrow(() -> new BusinessException("El empleador no existe."));
 
-        // 3) Completar datos de negocio que NO vienen del cliente
-        jobOfferEntity.setPublicationDate(LocalDate.now());
-        jobOfferEntity.setStatus(JobOfferStatus.ACTIVA);
+        JobOfferEntity entity = jobOfferMapper.toEntityForCreation(dto);
+        entity.setEmployer(employer);
 
-        // 4) Persistir
-        JobOfferEntity saved = this.jobOfferRepository.save(jobOfferEntity);
+        entity.setPublicationDate(LocalDate.now());
+        entity.setStatus(JobOfferStatus.ACTIVA);
 
-        // 5) Devolver DTO
-        return this.jobOfferMapper.toDTO(saved);
+        return jobOfferMapper.toDTO(jobOfferRepository.save(entity));
     }
 
     @Override
     @Transactional
     public JobOfferDTO update(Long id, JobOfferUpdateDTO dto) {
-        JobOfferEntity jobOfferEntity = this.jobOfferRepository.findById(id)
+
+        JobOfferEntity entity = jobOfferRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("La oferta no fue encontrada."));
 
-        // Validar fecha de cierre si viene informada
+        // Validación fechas
         if (dto.closingDate() != null && dto.closingDate().isBefore(LocalDate.now())) {
             throw new BusinessException("La fecha de cierre debe ser presente o futura.");
         }
 
-        this.jobOfferMapper.updateEntityFromDTO(dto, jobOfferEntity);
+        // Regla: una oferta VENCIDA no puede volver a ACTIVA
+        if (dto.status() == JobOfferStatus.ACTIVA &&
+                entity.getClosingDate().isBefore(LocalDate.now())) {
+            throw new BusinessException("No se puede reactivar una oferta vencida.");
+        }
 
-        JobOfferEntity saved = this.jobOfferRepository.save(jobOfferEntity);
+        jobOfferMapper.updateEntityFromDTO(dto, entity);
 
-        return this.jobOfferMapper.toDTO(saved);
+        // Si cambia a INACTIVA → cerrar postulaciones lógicas (más adelante)
+        if (dto.status() == JobOfferStatus.CERRADA) {
+            entity.setStatus(JobOfferStatus.CERRADA);
+        }
+
+        return jobOfferMapper.toDTO(jobOfferRepository.save(entity));
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        if (!this.jobOfferRepository.existsById(id)){
+        if (!jobOfferRepository.existsById(id)) {
             throw new ResourceNotFoundException("Oferta Laboral", id);
         }
-
-        this.jobOfferRepository.deleteById(id);
+        jobOfferRepository.deleteById(id);
     }
 }
+
