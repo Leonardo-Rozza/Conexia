@@ -1,5 +1,6 @@
 package com.conexia.presentation.controller;
 
+import com.conexia.persistence.entity.enums.JobOfferStatus;
 import com.conexia.service.JobOfferService;
 import com.conexia.service.dto.JobOfferCreateDTO;
 import com.conexia.service.dto.JobOfferDTO;
@@ -99,5 +100,52 @@ public class JobOfferController {
     public ResponseEntity<Page<JobOfferDTO>> getAllPaginated(Pageable pageable) {
         return ResponseEntity.ok(jobOfferService.findAll(pageable));
     }
+
+    // =====================================================
+    // 1. OBTENER LAS OFERTAS DE UN EMPLEADOR
+    // =====================================================
+    @Operation(summary = "Obtener ofertas de un empleador")
+    @GetMapping("/employer/{employerId}")
+    @PreAuthorize("hasRole('ADMIN') or @securityService.isEmployerOwner(#employerId)")
+    public ResponseEntity<List<JobOfferDTO>> findByEmployer(@PathVariable Long employerId) {
+        return ResponseEntity.ok(jobOfferService.findByEmployer(employerId));
+    }
+
+    // =====================================================
+    // 2. OBTENER OFERTAS ACTIVAS
+    // =====================================================
+    @Operation(summary = "Obtener ofertas activas")
+    @GetMapping("/active")
+    public ResponseEntity<List<JobOfferDTO>> findActive() {
+        return ResponseEntity.ok(jobOfferService.findActive());
+    }
+
+    // =====================================================
+    // 3. CERRAR / DESACTIVAR OFERTA (PATCH)
+    // =====================================================
+    @Operation(summary = "Cerrar una oferta laboral")
+    @PatchMapping("/{id}/close")
+    @PreAuthorize("hasRole('ADMIN') or @securityService.isJobOfferOwner(#id)")
+    public ResponseEntity<JobOfferDTO> closeOffer(@PathVariable Long id) {
+
+        JobOfferUpdateDTO dto = new JobOfferUpdateDTO(
+                null, null, null, null,
+                JobOfferStatus.CERRADA
+        );
+
+        JobOfferDTO updated = jobOfferService.update(id, dto);
+        return ResponseEntity.ok(updated);
+    }
+
+    // =====================================================
+    // 4. BUSCAR OFERTAS POR ESTADO
+    // =====================================================
+    @Operation(summary = "Buscar ofertas por estado")
+    @GetMapping("/status/{status}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<JobOfferDTO>> findByStatus(@PathVariable JobOfferStatus status) {
+        return ResponseEntity.ok(jobOfferService.findByStatus(status));
+    }
+
 }
 

@@ -82,6 +82,14 @@ public class JobOfferServiceImpl implements JobOfferService {
     }
 
     @Override
+    public List<JobOfferDTO> findByStatus(JobOfferStatus status) {
+        return jobOfferRepository.findAllByStatus(status)
+                .stream()
+                .map(jobOfferMapper::toDTO)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public JobOfferDTO create(JobOfferCreateDTO dto) {
 
@@ -126,6 +134,18 @@ public class JobOfferServiceImpl implements JobOfferService {
         if (dto.status() == JobOfferStatus.CERRADA) {
             entity.setStatus(JobOfferStatus.CERRADA);
         }
+
+        return jobOfferMapper.toDTO(jobOfferRepository.save(entity));
+    }
+
+    @Override
+    @Transactional
+    public JobOfferDTO close(Long id) {
+
+        JobOfferEntity entity = jobOfferRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Oferta Laboral", id));
+
+        entity.setStatus(JobOfferStatus.CERRADA);
 
         return jobOfferMapper.toDTO(jobOfferRepository.save(entity));
     }

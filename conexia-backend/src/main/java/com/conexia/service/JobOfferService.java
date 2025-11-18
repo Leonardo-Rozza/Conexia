@@ -1,5 +1,6 @@
 package com.conexia.service;
 
+import com.conexia.persistence.entity.enums.JobOfferStatus;
 import com.conexia.service.dto.JobOfferCreateDTO;
 import com.conexia.service.dto.JobOfferDTO;
 import com.conexia.service.dto.JobOfferUpdateDTO;
@@ -16,7 +17,9 @@ public interface JobOfferService {
     JobOfferDTO findActiveById(Long id);
     List<JobOfferDTO> findActive();
     List<JobOfferDTO> findByEmployer(Long employerId);
+    List<JobOfferDTO> findByStatus(JobOfferStatus status);
     JobOfferDTO create(JobOfferCreateDTO dto);
     JobOfferDTO update(Long id, JobOfferUpdateDTO dto);
+    JobOfferDTO close(Long id);
     void delete(Long id);
 }
