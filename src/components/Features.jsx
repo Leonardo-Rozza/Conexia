@@ -1,6 +1,21 @@
-import { GraduationCap, Building2, School, ArrowRight, Users, Briefcase, BookOpen } from "lucide-react";
+import { useState } from "react";
+import { GraduationCap, Building2, School, Users, Briefcase, BookOpen } from "lucide-react";
+import { LoginModal } from "../components/LoginModal"; // ajustá la ruta según tu proyecto
 
-export default function Features({ onLogin }) {
+export default function Features() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [userType, setUserType] = useState("graduate");
+
+  const handleOpenModal = (type) => {
+    setUserType(type);
+    setModalOpen(true);
+  };
+
+  const handleLogin = (userData) => {
+    console.log("Usuario logueado:", userData);
+    setModalOpen(false);
+  };
+
   return (
     <div className="py-16 .bg-gradient-to-br from-purple-50/50 to-amber-50/50 dark:bg-gray-900">
       <div className="container mx-auto px-4">
@@ -41,7 +56,7 @@ export default function Features({ onLogin }) {
             </ul>
             <button
               className="w-full py-2 rounded bg-[#d3bcf6] hover:bg-[#e3e6ba] text-gray-900 font-semibold transition"
-              onClick={() => onLogin('graduate')}
+              onClick={() => handleOpenModal("graduate")}
             >
               Registrarme como Egresado
             </button>
@@ -72,7 +87,7 @@ export default function Features({ onLogin }) {
             </ul>
             <button
               className="w-full py-2 rounded bg-[#d3bcf6] hover:bg-[#e3e6ba] text-gray-900 font-semibold transition"
-              onClick={() => onLogin('employer')}
+              onClick={() => handleOpenModal("employer")}
             >
               Registrarme como Empleador
             </button>
@@ -103,14 +118,21 @@ export default function Features({ onLogin }) {
             </ul>
             <button
               className="w-full py-2 rounded bg-[#d3bcf6] hover:bg-[#e3e6ba] text-gray-900 font-semibold transition"
-              onClick={() => onLogin('institution')}
+              onClick={() => handleOpenModal("institution")}
             >
               Registrarme como Institución
             </button>
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onLogin={handleLogin}
+        userType={userType}
+      />
     </div>
   );
 }
-

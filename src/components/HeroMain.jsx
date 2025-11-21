@@ -1,6 +1,21 @@
+import { useState } from "react";
 import { GraduationCap, Building2, School, ArrowRight } from "lucide-react";
+import { LoginModal } from "../components/LoginModal"; // ajustá la ruta según tu proyecto
 
 export default function HeroMain({ onLogin, isMobile }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userType, setUserType] = useState("graduate");
+
+  const handleOpenModal = (type) => {
+    setUserType(type);
+    setIsModalOpen(true);
+  };
+
+  const handleLogin = (user) => {
+    onLogin(user); // mantiene tu función original
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="relative overflow-hidden .bg-gradient-to-br from-purple-100 to-amber-50 dark:from-purple-950 dark:to-amber-950">
       <div className="container mx-auto px-4 py-12 lg:py-24">
@@ -18,7 +33,7 @@ export default function HeroMain({ onLogin, isMobile }) {
             <div className="flex flex-col gap-3">
               <button 
                 className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white bg-purple-400 hover:bg-orange-300 transition ${isMobile ? 'text-base' : 'text-lg'}`}
-                onClick={() => onLogin('graduate')}
+                onClick={() => handleOpenModal('graduate')}
               >
                 <GraduationCap className="h-5 w-5" />
                 Soy Egresado
@@ -27,7 +42,7 @@ export default function HeroMain({ onLogin, isMobile }) {
               
               <button 
                 className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md border border-gray-300 text-gray-800 hover:bg-gray-100 transition ${isMobile ? 'text-base' : 'text-lg'}`}
-                onClick={() => onLogin('employer')}
+                onClick={() => handleOpenModal('employer')}
               >
                 <Building2 className="h-5 w-5" />
                 Soy Empleador
@@ -35,7 +50,7 @@ export default function HeroMain({ onLogin, isMobile }) {
               
               <button 
                 className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md border border-gray-300 text-gray-800 hover:bg-gray-100 transition ${isMobile ? 'text-base' : 'text-lg'}`}
-                onClick={() => onLogin('institution')}
+                onClick={() => handleOpenModal('institution')}
               >
                 <School className="h-5 w-5" />
                 Soy Institución
@@ -52,7 +67,16 @@ export default function HeroMain({ onLogin, isMobile }) {
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onLogin={handleLogin}
+        userType={userType}
+      />
     </div>
   );
 }
+
 

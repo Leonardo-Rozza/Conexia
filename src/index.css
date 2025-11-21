@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
+/* Gradiente Conexia */
 .conexia-gradient {
   background: linear-gradient(90deg, rgba(211,188,246,1) 37%, rgba(227,230,186,1) 79%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+
+
