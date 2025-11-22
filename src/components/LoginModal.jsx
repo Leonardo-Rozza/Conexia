@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import logoConexia from "../assets/logo-conexiaa.jpg";
 
 export function LoginModal({ isOpen, onClose, onLogin, userType }) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("login");
   const [formData, setFormData] = useState({
     name: "",
@@ -13,8 +14,6 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
     position: "",
     institution: ""
   });
-
-  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
@@ -38,48 +37,28 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    try {
-      // Cambia estas URLs a tus endpoints reales de backend
-      const url = activeTab === "login"
-        ? "https://tu-backend.com/api/login"
-        : "https://tu-backend.com/api/register";
+    console.log("EL SUBMIT SE EJECUTÓ"); // 🔥 ESTE ES EL TEST IMPORTANTE
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      });
+    const userData = {
+      name: formData.name || "Usuario Demo",
+      email: formData.email || "demo@ejemplo.com"
+    };
 
-      const data = await response.json();
+    onLogin(userData);
+    setFormData({ name: "", email: "", password: "", company: "", position: "", institution: "" });
 
-      if (response.ok) {
-        onLogin(data); // Guardamos info del usuario
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          company: "",
-          position: "",
-          institution: ""
-        });
-        onClose();       // Cerramos modal
-        navigate("/instituciones"); // Redirigimos a instituciones
-      } else {
-        alert(data.message || "Error en el servidor");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Ocurrió un error, intenta de nuevo");
-    }
+    onClose();
+
+    navigate("/instituciones"); // Redirige a instituciones
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-md p-6 relative">
-        {/* Header */}
+        
         <div className="flex items-center justify-center gap-2 mb-4">
           <img src={logoConexia} alt="Conexia" className="h-12 w-12" />
           <span className="text-2xl font-bold conexia-gradient">Conexia</span>
@@ -95,7 +74,6 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="flex mb-4 gap-2">
           <button
             className={`flex-1 py-2 text-center transition
@@ -118,7 +96,6 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
           </button>
         </div>
 
-        {/* Formularios */}
         {activeTab === "login" ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -168,44 +145,6 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
               />
             </div>
 
-            {userType === "employer" && (
-              <>
-                <div>
-                  <label className="block text-sm mb-1">Empresa</label>
-                  <input
-                    type="text"
-                    className="w-full border px-3 py-2 rounded"
-                    placeholder="Nombre de tu empresa"
-                    value={formData.company}
-                    onChange={e => handleInputChange("company", e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm mb-1">Cargo</label>
-                  <input
-                    type="text"
-                    className="w-full border px-3 py-2 rounded"
-                    placeholder="Tu cargo en la empresa"
-                    value={formData.position}
-                    onChange={e => handleInputChange("position", e.target.value)}
-                  />
-                </div>
-              </>
-            )}
-
-            {userType === "institution" && (
-              <div>
-                <label className="block text-sm mb-1">Institución</label>
-                <input
-                  type="text"
-                  className="w-full border px-3 py-2 rounded"
-                  placeholder="Nombre de la institución"
-                  value={formData.institution}
-                  onChange={e => handleInputChange("institution", e.target.value)}
-                />
-              </div>
-            )}
-
             <div>
               <label className="block text-sm mb-1">Contraseña</label>
               <input
@@ -218,12 +157,11 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
             </div>
 
             <button type="submit" className="w-full bg-[#d3bcf6] hover:bg-[#e3e6ba] text-gray-900 py-2 rounded-full transition border border-[#b0a0e0]">
-              {activeTab === "login" ? "Iniciar Sesión" : "Crear Cuenta"}
+              Crear Cuenta
             </button>
           </form>
         )}
 
-        {/* Cerrar */}
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
@@ -236,4 +174,6 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
 }
 
 export default LoginModal;
+
+
 
