@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GraduationCap, Building2, School } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import logoConexia from "../assets/logo-conexiaa.jpg";
 
 export function LoginModal({ isOpen, onClose, onLogin, userType }) {
@@ -13,9 +14,10 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
     institution: ""
   });
 
+  const navigate = useNavigate();
+
   if (!isOpen) return null;
 
-  // Configuración según tipo de usuario
   const getUserTypeConfig = () => {
     switch (userType) {
       case "graduate":
@@ -36,16 +38,42 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const userData = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: formData.name || "Usuario Demo",
-      email: formData.email || "demo@ejemplo.com"
-    };
-    onLogin(userData);
-    setFormData({ name: "", email: "", password: "", company: "", position: "", institution: "" });
-    onClose();
+
+    try {
+      // Cambia estas URLs a tus endpoints reales de backend
+      const url = activeTab === "login"
+        ? "https://tu-backend.com/api/login"
+        : "https://tu-backend.com/api/register";
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        onLogin(data); // Guardamos info del usuario
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          company: "",
+          position: "",
+          institution: ""
+        });
+        onClose();       // Cerramos modal
+        navigate("/instituciones"); // Redirigimos a instituciones
+      } else {
+        alert(data.message || "Error en el servidor");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Ocurrió un error, intenta de nuevo");
+    }
   };
 
   return (
@@ -190,7 +218,7 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
             </div>
 
             <button type="submit" className="w-full bg-[#d3bcf6] hover:bg-[#e3e6ba] text-gray-900 py-2 rounded-full transition border border-[#b0a0e0]">
-              Crear Cuenta
+              {activeTab === "login" ? "Iniciar Sesión" : "Crear Cuenta"}
             </button>
           </form>
         )}
@@ -208,3 +236,4 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
 }
 
 export default LoginModal;
+
