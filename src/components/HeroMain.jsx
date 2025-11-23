@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { GraduationCap, Building2, School, ArrowRight } from "lucide-react";
-import { LoginModal } from "../components/LoginModal";
-import { useNavigate } from "react-router-dom";
+import { LoginModal } from "../components/LoginModal"; // ajustá la ruta según tu proyecto
 
-export default function HeroMain({ isMobile }) {
-  const navigate = useNavigate();
+export default function HeroMain({ onLogin, isMobile }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userType, setUserType] = useState("graduate");
 
@@ -14,8 +12,8 @@ export default function HeroMain({ isMobile }) {
   };
 
   const handleLogin = (user) => {
+    onLogin(user); // mantiene tu función original
     setIsModalOpen(false);
-    navigate("/instituciones"); // Redirige a instituciones
   };
 
   return (
