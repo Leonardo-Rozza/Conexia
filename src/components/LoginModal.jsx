@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { GraduationCap, Building2, School } from "lucide-react";
 import logoConexia from "../assets/logo-conexiaa.jpg";
 
@@ -13,8 +12,6 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
     position: "",
     institution: ""
   });
-
-  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
@@ -41,20 +38,12 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const userData = {
       id: Math.random().toString(36).substr(2, 9),
       name: formData.name || "Usuario Demo",
       email: formData.email || "demo@ejemplo.com"
     };
-
     onLogin(userData);
-
-    // 👉 Redirección según tipo de usuario
-    if (userType === "graduate") navigate("/egresados");
-    if (userType === "employer") navigate("/empleadores");
-    if (userType === "institution") navigate("/instituciones");
-
     setFormData({ name: "", email: "", password: "", company: "", position: "", institution: "" });
     onClose();
   };
@@ -62,7 +51,6 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-md p-6 relative">
-
         {/* Header */}
         <div className="flex items-center justify-center gap-2 mb-4">
           <img src={logoConexia} alt="Conexia" className="h-12 w-12" />
@@ -131,7 +119,6 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
           </form>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-
             <div>
               <label className="block text-sm mb-1">Nombre Completo</label>
               <input
@@ -142,7 +129,6 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
                 onChange={e => handleInputChange("name", e.target.value)}
               />
             </div>
-
             <div>
               <label className="block text-sm mb-1">Correo Electrónico</label>
               <input
