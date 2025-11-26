@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GraduationCap, Building2, School, ArrowRight } from "lucide-react";
-import { LoginModal } from "../components/LoginModal"; // ajustá la ruta según tu proyecto
+import LoginModal from "../components/LoginModal"; // ahora usa la versión preparada para backend
 
 export default function HeroMain({ onLogin, isMobile }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,8 +11,10 @@ export default function HeroMain({ onLogin, isMobile }) {
     setIsModalOpen(true);
   };
 
-  const handleLogin = (user) => {
-    onLogin(user); // mantiene tu función original
+  const handleLogin = (userData) => {
+    // Aquí podemos actualizar estado global, context o redux
+    console.log("Usuario logueado:", userData);
+    onLogin(userData); // para que App o contexto sepa quién está logueado
     setIsModalOpen(false);
   };
 

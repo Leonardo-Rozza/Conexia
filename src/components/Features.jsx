@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { GraduationCap, Building2, School, Users, Briefcase, BookOpen } from "lucide-react";
-import { LoginModal } from "../components/LoginModal"; // ajustá la ruta según tu proyecto
+import LoginModal from "../components/LoginModal"; // versión lista para backend
 
-export default function Features() {
+export default function Features({ onLogin }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [userType, setUserType] = useState("graduate");
 
@@ -12,14 +12,13 @@ export default function Features() {
   };
 
   const handleLogin = (userData) => {
-    console.log("Usuario logueado:", userData);
+    onLogin(userData); // notifica a App o contexto
     setModalOpen(false);
   };
 
   return (
     <div className="py-16 .bg-gradient-to-br from-purple-50/50 to-amber-50/50 dark:bg-gray-900">
       <div className="container mx-auto px-4">
-        {/* Título de la sección */}
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Una Plataforma, Tres Perspectivas
@@ -29,7 +28,6 @@ export default function Features() {
           </p>
         </div>
 
-        {/* Tarjetas */}
         <div className="grid md:grid-cols-3 gap-8">
           {/* Egresados */}
           <div className="text-center border rounded-lg hover:shadow-lg transition-shadow p-6">
@@ -136,4 +134,3 @@ export default function Features() {
     </div>
   );
 }
-

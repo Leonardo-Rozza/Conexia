@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { GraduationCap, Building2, School } from "lucide-react";
 import logoConexia from "../assets/logo-conexiaa.jpg";
+import { useNavigate } from "react-router-dom";
 
 export function LoginModal({ isOpen, onClose, onLogin, userType }) {
   const [activeTab, setActiveTab] = useState("login");
@@ -13,9 +14,10 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
     institution: ""
   });
 
+  const navigate = useNavigate(); // Para redireccionar después del login
+
   if (!isOpen) return null;
 
-  // Configuración según tipo de usuario
   const getUserTypeConfig = () => {
     switch (userType) {
       case "graduate":
@@ -36,16 +38,60 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const userData = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: formData.name || "Usuario Demo",
-      email: formData.email || "demo@ejemplo.com"
+
+    const url = activeTab === "login" 
+      ? "/api/auth/login" 
+      : "/api/auth/register";
+
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      company: formData.company,
+      position: formData.position,
+      institution: formData.institution
     };
-    onLogin(userData);
-    setFormData({ name: "", email: "", password: "", company: "", position: "", institution: "" });
-    onClose();
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error("Error en la autenticación");
+
+      const data = await response.json();
+
+      // Guardar token en localStorage si se usa JWT
+      localStorage.setItem("token", data.token);
+
+      // Llamar la función onLogin para actualizar estado global
+      onLogin({ ...data.user, type: userType });
+
+      // Redirigir según tipo de usuario
+      switch (userType) {
+        case "graduate":
+          navigate("/Egresados");
+          break;
+        case "employer":
+          navigate("/Empleadores");
+          break;
+        case "institution":
+          navigate("/Instituciones");
+          break;
+        default:
+          navigate("/");
+      }
+
+      setFormData({ name: "", email: "", password: "", company: "", position: "", institution: "" });
+      onClose();
+    } catch (error) {
+      console.error(error);
+      alert("Hubo un problema con la autenticación");
+    }
   };
 
   return (
