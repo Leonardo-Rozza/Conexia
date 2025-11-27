@@ -35,7 +35,7 @@ public class GraduateEntity {
     private String name;
 
     @Column(name = "last_name", length = 100)
-    private String lastName;
+    private String lastname;
 
     @Column(name = "email", unique = true, length = 150)
     private String email;
