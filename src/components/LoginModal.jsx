@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { GraduationCap, Building2, School } from "lucide-react";
-import logoConexia from "../assets/logo-conexiaa.jpg";
+import logoConexia from "../assets/logo-conexia.png";
 
 export function LoginModal({ isOpen, onClose, onLogin, userType }) {
   const [activeTab, setActiveTab] = useState("login");
@@ -50,7 +50,7 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-md p-6 relative">
+      <div className="bg-[#f5efe7] rounded-lg w-full max-w-md p-6 relative">
         {/* Header */}
         <div className="flex items-center justify-center gap-2 mb-4">
           <img src={logoConexia} alt="Conexia" className="h-12 w-12" />
@@ -68,12 +68,12 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
         </div>
 
         {/* Tabs */}
-        <div className="flex mb-4 gap-2">
+        <div className="flex mb-4 gap-2 rounded-full p-[3px] bg-[#d3bcf6]/50">
           <button
             className={`flex-1 py-2 text-center transition
               ${activeTab === "login"
-                ? "bg-[#d3bcf6]/50 rounded-full font-semibold text-gray-900 border border-[#b0a0e0]"
-                : "bg-transparent text-gray-700 hover:bg-[#d3bcf6]/20 rounded-full border border-transparent"}`}
+                ? "bg-[#a0a0d3] rounded-full font-semibold text-gray-900"
+                : "bg-transparent text-gray-700 hover:bg-[#d3bcf6]/50 rounded-full border border-transparent"}`}
             onClick={() => setActiveTab("login")}
           >
             Iniciar Sesión
@@ -82,8 +82,8 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
           <button
             className={`flex-1 py-2 text-center transition
               ${activeTab === "register"
-                ? "bg-[#d3bcf6]/50 rounded-full font-semibold text-gray-900 border border-[#b0a0e0]"
-                : "bg-transparent text-gray-700 hover:bg-[#d3bcf6]/20 rounded-full border border-transparent"}`}
+                ? "bg-[#a0a0d3] rounded-full font-semibold text-gray-900"
+                : "bg-transparent text-gray-700 hover:bg-[#d3bcf6]/50 rounded-full border border-transparent"}`}
             onClick={() => setActiveTab("register")}
           >
             Registrarse
@@ -113,7 +113,7 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
                 onChange={e => handleInputChange("password", e.target.value)}
               />
             </div>
-            <button type="submit" className="w-full bg-[#d3bcf6] hover:bg-[#e3e6ba] text-gray-900 py-2 rounded-full transition border border-[#b0a0e0]">
+            <button type="submit" className="w-full bg-[#d3bcf6] hover:bg-[#d3bcf6]/70 text-gray-900 py-2 rounded-md transition">
               Iniciar Sesión
             </button>
           </form>
