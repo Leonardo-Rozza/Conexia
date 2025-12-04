@@ -17,7 +17,7 @@ export default function Features() {
   };
 
   return (
-    <div className="py-16 .bg-gradient-to-br from-purple-50/50 to-amber-50/50 dark:bg-gray-900">
+    <div className="py-16 .bg-gradient-to-br from-purple-50/50 to-amber-50/50 ">
       <div className="container mx-auto px-4">
         {/* Título de la sección */}
         <div className="text-center mb-12">
