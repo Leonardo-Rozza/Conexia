@@ -1,6 +1,6 @@
 import { useState } from "react";
 import logo from "../assets/logo-conexiaa.jpg";
-import LoginModal from "../components/LoginModal"; // versión lista para backend
+import LoginModal from "./LoginModal"; // versión lista para backend
 
 export default function Header({ onLogin }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -89,3 +89,4 @@ export default function Header({ onLogin }) {
     </>
   );
 }
+

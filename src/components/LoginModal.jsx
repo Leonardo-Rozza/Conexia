@@ -14,7 +14,7 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
     institution: ""
   });
 
-  const navigate = useNavigate(); // Para redireccionar después del login
+  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
@@ -38,60 +38,36 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    const url = activeTab === "login" 
-      ? "/api/auth/login" 
-      : "/api/auth/register";
-
-    const payload = {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      company: formData.company,
-      position: formData.position,
-      institution: formData.institution
+    // Simula login/registro exitoso sin backend
+    const simulatedUser = {
+      name: formData.name || "Usuario de prueba",
+      email: formData.email || "test@conexia.com",
+      type: userType,
     };
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+    onLogin(simulatedUser);
 
-      if (!response.ok) throw new Error("Error en la autenticación");
-
-      const data = await response.json();
-
-      // Guardar token en localStorage si se usa JWT
-      localStorage.setItem("token", data.token);
-
-      // Llamar la función onLogin para actualizar estado global
-      onLogin({ ...data.user, type: userType });
-
-      // Redirigir según tipo de usuario
-      switch (userType) {
-        case "graduate":
-          navigate("/Egresados");
-          break;
-        case "employer":
-          navigate("/Empleadores");
-          break;
-        case "institution":
-          navigate("/Instituciones");
-          break;
-        default:
-          navigate("/");
-      }
-
-      setFormData({ name: "", email: "", password: "", company: "", position: "", institution: "" });
-      onClose();
-    } catch (error) {
-      console.error(error);
-      alert("Hubo un problema con la autenticación");
+    // Redirigir según tipo de usuario
+    switch (userType) {
+      case "graduate":
+        navigate("/Egresados");
+        break;
+      case "employer":
+        navigate("/Empleadores");
+        break;
+      case "institution":
+        navigate("/Instituciones");
+        break;
+      default:
+        navigate("/");
     }
+
+    // Limpiar formulario y cerrar modal
+    setFormData({ name: "", email: "", password: "", company: "", position: "", institution: "" });
+    onClose();
   };
 
   return (
@@ -254,3 +230,5 @@ export function LoginModal({ isOpen, onClose, onLogin, userType }) {
 }
 
 export default LoginModal;
+
+
