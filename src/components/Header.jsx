@@ -1,6 +1,11 @@
 import { useState } from "react";
+<<<<<<< HEAD
 import logo from "../assets/logo-conexiaa.jpg";
 import LoginModal from "./LoginModal"; // versión lista para backend
+=======
+import logo from "../assets/logo-conexia.png";
+import { LoginModal } from "../components/LoginModal"; // ajustá la ruta según tu proyecto
+>>>>>>> frontend
 
 export default function Header({ onLogin }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,7 +26,7 @@ export default function Header({ onLogin }) {
 
   return (
     <>
-      <header className="bg-white/40 backdrop-blur-sm border-b border-[#d3bcf6]/50 shadow-[0_4px_8px_rgba(0,0,0,0.05)]">
+      <header className="bg-white/30 backdrop-blur-sm border-b border-purple-200/50 shadow-[0_4px_8px_rgba(0,0,0,0.05)]">
         <div className="container mx-auto px-20 py-3 flex items-center justify-between">
           <div className="flex items-center gap-1">
             <img src={logo} alt="Conexia Logo" className="h-24 w-24 object-contain" />
@@ -44,14 +49,26 @@ export default function Header({ onLogin }) {
           {/* Navegación escritorio */}
           <nav className="hidden md:flex items-center gap-3">
             <button
+<<<<<<< HEAD
               onClick={() => handleOpenModal("graduate")}
               className="px-4 py-2 text-gray-800 font-medium rounded-md hover:bg-[#f5c16c] hover:text-gray-900 transition"
+=======
+              onClick={() => handleLogin("graduate")}
+              className="px-4 py-2 text-gray-800 font-medium rounded-md 
+                         hover:bg-[#ecd6c0] hover:text-gray-900 transition"
+>>>>>>> frontend
             >
               Iniciar Sesión
             </button>
             <button
+<<<<<<< HEAD
               onClick={() => handleOpenModal("graduate")}
               className="px-4 py-2 text-gray-800 font-semibold rounded-md bg-[#d3bcf6]/50 hover:bg-[#d3bcf6]/50 transition"
+=======
+              onClick={() => handleLogin("graduate")}
+              className="px-4 py-2 text-gray-800 font-semibold rounded-md 
+                         bg-[#d3bcf6] hover:bg-[#d3bcf6]/70 transition"
+>>>>>>> frontend
             >
               Registrarse
             </button>
