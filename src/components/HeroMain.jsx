@@ -49,15 +49,9 @@ export default function HeroMain({ onLogin, isMobile }) {
                 <Building2 className="h-5 w-5" />
                 Soy Empleador
               </button>
-<<<<<<< HEAD
 
               <button
                 className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md border border-gray-300 text-gray-800 hover:bg-gray-100 transition ${isMobile ? 'text-base' : 'text-lg'}`}
-=======
-              
-              <button 
-                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-[#f5efe7] text-[#2d1b4e] hover:bg-[#ecd6c0] transition ${isMobile ? 'text-base' : 'text-lg'}`}
->>>>>>> frontend
                 onClick={() => handleOpenModal('institution')}
               >
                 <School className="h-5 w-5" />

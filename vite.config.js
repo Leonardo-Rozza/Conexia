@@ -1,13 +1,15 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
-import path from 'path'; // <--- Única importación extra necesaria
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  
-  // Bloque para configurar el alias @/
+  plugins: [
+    react(),
+    tailwindcss()   // <--- Ahora sí está siendo usado
+  ],
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

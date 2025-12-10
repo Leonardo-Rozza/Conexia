@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { GraduationCap, Building2, School } from "lucide-react";
-<<<<<<< HEAD
-import logoConexia from "../assets/logo-conexiaa.jpg";
-import { useNavigate } from "react-router-dom";
-=======
 import logoConexia from "../assets/logo-conexia.png";
->>>>>>> frontend
+import { useNavigate } from "react-router-dom";
 
 export function LoginModal({ isOpen, onClose, onLogin, userType }) {
   const [activeTab, setActiveTab] = useState("login");

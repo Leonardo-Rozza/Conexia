@@ -1,11 +1,6 @@
 import { useState } from "react";
-<<<<<<< HEAD
-import logo from "../assets/logo-conexiaa.jpg";
-import LoginModal from "./LoginModal"; // versión lista para backend
-=======
 import logo from "../assets/logo-conexia.png";
-import { LoginModal } from "../components/LoginModal"; // ajustá la ruta según tu proyecto
->>>>>>> frontend
+import LoginModal from "./LoginModal"; // versión lista para backend
 
 export default function Header({ onLogin }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,26 +44,14 @@ export default function Header({ onLogin }) {
           {/* Navegación escritorio */}
           <nav className="hidden md:flex items-center gap-3">
             <button
-<<<<<<< HEAD
               onClick={() => handleOpenModal("graduate")}
               className="px-4 py-2 text-gray-800 font-medium rounded-md hover:bg-[#f5c16c] hover:text-gray-900 transition"
-=======
-              onClick={() => handleLogin("graduate")}
-              className="px-4 py-2 text-gray-800 font-medium rounded-md 
-                         hover:bg-[#ecd6c0] hover:text-gray-900 transition"
->>>>>>> frontend
             >
               Iniciar Sesión
             </button>
             <button
-<<<<<<< HEAD
               onClick={() => handleOpenModal("graduate")}
               className="px-4 py-2 text-gray-800 font-semibold rounded-md bg-[#d3bcf6]/50 hover:bg-[#d3bcf6]/50 transition"
-=======
-              onClick={() => handleLogin("graduate")}
-              className="px-4 py-2 text-gray-800 font-semibold rounded-md 
-                         bg-[#d3bcf6] hover:bg-[#d3bcf6]/70 transition"
->>>>>>> frontend
             >
               Registrarse
             </button>
