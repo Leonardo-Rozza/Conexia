@@ -17,22 +17,22 @@ export default function HeroMain({ onLogin, isMobile }) {
   };
 
   return (
-    <div className="relative overflow-hidden .bg-gradient-to-br from-purple-100 to-amber-50 dark:from-purple-950 dark:to-amber-950">
+    <div className="relative overflow-hidden bg-linear-to-b from-purple-100 to-amber-50">
       <div className="container mx-auto px-4 py-12 lg:py-24">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <div className="space-y-6 lg:space-y-8">
             <div className="space-y-4">
-              <h1 className={`${isMobile ? 'text-3xl' : 'text-4xl lg:text-6xl'} font-bold text-gray-900 dark:text-white`}>
+              <h1 className={`${isMobile ? 'text-3xl' : 'text-4xl lg:text-6xl'} font-bold text-gray-900`}>
                 Conecta Tu <span className="text-purple-400">Futuro</span> Profesional
               </h1>
-              <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600 dark:text-gray-300`}>
+              <p className={`${isMobile ? 'text-lg' : 'text-xl'} text-gray-600`}>
                 La plataforma que une egresados, empleadores e instituciones educativas para crear oportunidades laborales exitosas.
               </p>
             </div>
             
             <div className="flex flex-col gap-3">
               <button 
-                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white bg-purple-400 hover:bg-orange-300 transition ${isMobile ? 'text-base' : 'text-lg'}`}
+                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md text-[#2d1b4e] bg-[#d3bcf6] hover:bg-[#d3bcf6]/70 transition ${isMobile ? 'text-base' : 'text-lg'}`}
                 onClick={() => handleOpenModal('graduate')}
               >
                 <GraduationCap className="h-5 w-5" />
@@ -41,7 +41,7 @@ export default function HeroMain({ onLogin, isMobile }) {
               </button>
               
               <button 
-                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md border border-gray-300 text-gray-800 hover:bg-gray-100 transition ${isMobile ? 'text-base' : 'text-lg'}`}
+                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-[#f5efe7] text-[#2d1b4e] hover:bg-[#ecd6c0] transition ${isMobile ? 'text-base' : 'text-lg'}`}
                 onClick={() => handleOpenModal('employer')}
               >
                 <Building2 className="h-5 w-5" />
@@ -49,7 +49,7 @@ export default function HeroMain({ onLogin, isMobile }) {
               </button>
               
               <button 
-                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md border border-gray-300 text-gray-800 hover:bg-gray-100 transition ${isMobile ? 'text-base' : 'text-lg'}`}
+                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-[#f5efe7] text-[#2d1b4e] hover:bg-[#ecd6c0] transition ${isMobile ? 'text-base' : 'text-lg'}`}
                 onClick={() => handleOpenModal('institution')}
               >
                 <School className="h-5 w-5" />
