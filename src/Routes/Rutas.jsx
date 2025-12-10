@@ -18,3 +18,9 @@ const Rutas = ({ user }) => {
 };
 
 export default Rutas;
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> frontend

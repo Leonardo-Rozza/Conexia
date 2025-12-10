@@ -1,9 +1,12 @@
+
 import React, { useState } from "react";
 import Header from "../components/Header";
 import HeroMain from "../components/HeroMain";
 import Features from "../components/Features";
 import Stats from "../components/Stats";
 import LoginModal from "../components/LoginModal";
+
+
 
 export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,6 +41,9 @@ export default function LandingPage() {
         onLogin={handleLogin}
         userType="graduate" // Cambiar según tipo de usuario: "graduate", "employer", "institution"
       />
+
+        
+
     </>
   );
 }
