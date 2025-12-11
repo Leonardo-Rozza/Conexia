@@ -1,16 +1,15 @@
+import React from "react";
 import ApplicationCard from "./ApplicationCard";
 
-export default function ApplicationList() {
-  const apps = [
-    { job: "Frontend React", company: "TechCorp", status: "Pendiente" },
-    { job: "QA Tester", company: "GlobalSoft", status: "Rechazado" },
-    { job: "Node Developer", company: "DevHouse", status: "Aceptado" },
-  ];
+export default function ApplicationList({ applications = [] }) {
+  if (!applications?.length) {
+    return <div className="text-center text-gray-500 p-6 bg-white rounded-xl">No tenés aplicaciones</div>;
+  }
 
   return (
-    <div className="grid md:grid-cols-2 gap-4">
-      {apps.map((a, i) => (
-        <ApplicationCard key={i} app={a} />
+    <div className="grid gap-4 mt-6">
+      {applications.map((a) => (
+        <ApplicationCard key={a.id} app={a} />
       ))}
     </div>
   );
